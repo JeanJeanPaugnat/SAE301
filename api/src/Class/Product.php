@@ -15,6 +15,7 @@ class Product extends Entity {
     private int $id; // id du produit
     private ?string $name = null; // nom du produit (nullable pour éviter erreur si non initialisé)
     private ?int $idcategory = null; // id de la catégorie du produit (nullable)
+    private ?float $price = null; 
 
     public function __construct(int $id){
         $this->id = $id;
@@ -51,11 +52,12 @@ class Product extends Entity {
      *  
      */
     // Implémentation correcte de JsonSerializable : méthode nommée jsonSerialize()
-    public function jsonSerialize(): mixed{
+    public function jsonSerialize(): mixed {
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "category" => $this->idcategory
+            "category" => $this->idcategory,
+            "price" => number_format($this->price, 2, ',', ' '),
         ];
     }
 
@@ -75,6 +77,25 @@ class Product extends Entity {
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
+    }
+
+        /**
+     * Get the value of name
+     */ 
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set the value of Price
+     *
+     * 
+     */ 
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
         return $this;
     }
 
