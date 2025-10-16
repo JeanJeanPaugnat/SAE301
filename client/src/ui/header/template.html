@@ -1,10 +1,52 @@
-<header style="background: #333; color: white; padding: 1rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0;">Click & Collect</h2>
-        <nav style="display: flex; gap: 1rem;">
+
+        <!-- <nav style="display: flex; gap: 1rem;">
             <a href="/" data-link style="color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Accueil</a>
             <a href="/products" data-link style="color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Produits</a>
             <a href="/about" data-link style="color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">À propos</a>
-        </nav>
+        </nav> -->
+
+<header class="top-0 left-0 w-full bg-white flex items-center justify-between pb-7 pt-7 px-6 py-3 border-b border-gray-200 z-50">
+
+    <!-- Menu Burger -->
+    <div class="flex items-center gap-2">
+      <button id="menuButton" class="w-6 h-6 flex items-center justify-center cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <span class="text-sm font-medium text-black">Menu</span>
     </div>
+    
+    <!-- Logo centré -->
+    <div class="absolute left-1/2 transform -translate-x-1/2">
+      <div class="flex items-center">
+        <!-- Ton logo SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="210" height="" aria-hidden="true" viewBox="0 0 151 16">
+          <path fill-rule="evenodd" d="m67.637.293 3.816 9.205L75.269.293h2.725L71.746 15.39l-.293.294-.294-.294L64.911.293zm-13.712 0c1.468 0 2.86.767 3.627 1.887l-1.467 1.468h-.462c-.304-.65-.973-1.048-1.698-1.048-.863 0-1.672.71-1.72 1.614-.035.68.277 1.105.84 1.468.606.391.854.554 1.677 1.006.897.493 3.166 1.46 3.166 4.005 0 2.509-2.097 4.843-4.802 4.843-.347 0-.976-.039-1.446-.147-1.325-.321-2.129-.822-2.998-1.845l1.887-1.929.65.545c.293.23.937.693 1.55.776 1.246.169 2.082-.655 2.244-1.468.129-.642-.034-1.6-1.069-2.096 0 0-1.866-1.037-2.684-1.51-.833-.482-1.719-1.798-1.719-3.375 0-1.174.538-2.311 1.405-3.103.67-.614 1.589-1.09 3.019-1.09zM138.67 0l9.77 9.77V.587l.294-.294h1.929l.294.294v14.802h-.462l-9.602-9.602v9.309l-.294.293h-1.929l-.293-.293V.293zm-28.807.293v2.223l-.294.293h-2.222v12.58h-2.516V2.809h-2.516V.587l.294-.294zm9.225 0v2.223l-.294.293h-2.222v12.58h-2.516V2.809h-2.516V.587l.294-.294zM2.516.293v12.58h5.032v2.516H0V.587L.293.293zm14.257 0a7.548 7.548 0 1 1 0 15.096 7.548 7.548 0 0 1 0-15.096m111.54 0a7.548 7.548 0 1 1 0 15.096 7.548 7.548 0 0 1 0-15.096m-98.415 0 .293.294v9.77a2.516 2.516 0 0 0 5.032 0V.587l.294-.294h1.929l.293.294v9.77a5.032 5.032 0 0 1-10.064 0V.587l.294-.294zm15.389 0v14.803l-.294.293h-2.222V.587l.293-.294zm37.446 0 .293.294v9.77a2.516 2.516 0 0 0 5.032 0V.587l.294-.294h1.928l.294.294v9.77a5.032 5.032 0 0 1-10.064 0V.587l.294-.294zm15.389 0v14.803l-.294.293h-2.222V.587l.293-.294zM16.772 2.81a5.032 5.032 0 1 0 .001 10.065 5.032 5.032 0 0 0 0-10.065zm111.541 0a5.032 5.032 0 1 0 0 10.065 5.032 5.032 0 0 0 0-10.065"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- espace vide à droite -->
+    <div class="w-16"></div>
 </header>
+
+
+  <!-- <div id="menuOverlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
+
+  <aside id="sideMenu" class="fixed top-0 left-0 h-full w-72 md:w-[300px] bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50 md:w-[300px]">
+    <div class="p-6 flex justify-between items-center border-b border-gray-200">
+      <h2 class="text-lg font-semibold">Menu</h2>
+      <button id="closeMenu" class="text-gray-600 hover:text-black">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="p-6 flex flex-col gap-4 text-gray-700">
+      <a href="/" data-link class="hover:text-black">Accueil</a>
+      <a href="/products" data-link class="hover:text-black">Produits</a>
+      <a href="/about" class="hover:text-black">À propos</a>
+      <a href="#" class="hover:text-black">Contact</a>
+    </nav>
+  </aside> -->

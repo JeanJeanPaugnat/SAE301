@@ -3,7 +3,7 @@ import template from "./template.html?raw";
 
 let ProductView = {
   html: function (data) {
-    let htmlString = '<div class="grid grid-cols-2 lg:grid-cols-4">';
+    let htmlString = '<div id="products" class="grid grid-cols-2 lg:grid-cols-4">';
     for (let obj of data) {
       htmlString  += genericRenderer(template, obj);
     }
