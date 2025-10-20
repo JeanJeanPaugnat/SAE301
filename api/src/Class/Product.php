@@ -7,7 +7,10 @@ class Product extends Entity implements JsonSerializable {
     private ?string $name = null;
     private ?int $idcategory = null;
     private ?float $price = null;
-    
+
+    // 🆕 Propriété pour l'image principale
+    private ?string $imagePrincipale = null;
+
     // 🆕 Liste des images liées à ce produit
     private array $images = []; // contiendra par exemple une liste d'objets Image ou de chaînes (URL)
 
@@ -25,6 +28,7 @@ class Product extends Entity implements JsonSerializable {
             "name" => $this->name,
             "category" => $this->idcategory,
             "price" => number_format($this->price, 2, ',', ' '),
+            "imagePrincipale" => $this->imagePrincipale,
             // 🆕 On renvoie la liste des images dans le JSON
             "images" => $this->images,
         ];
@@ -45,6 +49,17 @@ class Product extends Entity implements JsonSerializable {
 
     public function setPrice(float $price): self {
         $this->price = $price;
+        return $this;
+    }
+
+    // 🆕 GETTER pour l'image principale
+    public function getImagePrincipale(): ?string {
+        return $this->imagePrincipale;
+    }
+
+    // 🆕 SETTER pour l'image principale (autorise null)
+    public function setImagePrincipale(?string $imagePrincipale): self {
+        $this->imagePrincipale = $imagePrincipale;
         return $this;
     }
 

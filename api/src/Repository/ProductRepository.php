@@ -49,6 +49,8 @@ class ProductRepository extends EntityRepository {
 
         // On associe les images au produit
         $p->setImages($imageUrls);
+        // 🆕 on définit l'imagePrincipale : première image si présente
+        $p->setImagePrincipale($imageUrls[0] ?? null);
 
         return $p;
     }
@@ -92,12 +94,17 @@ class ProductRepository extends EntityRepository {
                 $currentProduct->setIdcategory($row['product_category']);
                 $currentProduct->setPrice($row['product_price']);
                 $currentProduct->setImages([]); // initialise la liste vide
+                $currentProduct->setImagePrincipale(null); // initialise l'image principale à null
                 $currentId = $row['product_id'];
             }
 
             // Si la ligne contient une image, on l’ajoute
             if (!empty($row['image_url'])) {
                 $currentProduct->addImage($row['image_url']);
+                // 🆕 si aucune imagePrincipale définie, on met la première rencontrée
+                if ($currentProduct->getImagePrincipale() === null) {
+                    $currentProduct->setImagePrincipale($row['image_url']);
+                }
             }
         }
 

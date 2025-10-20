@@ -31,20 +31,9 @@
     <section class="relative w-full md:w-1/2 bg-gray-100" aria-label="Galerie d’images du produit">
       <!-- Slider -->
       <div class="swiper overflow-hidden h-full">
-        <div class="swiper-wrapper">
-          <!-- Image principale -->
-          <figure class="swiper-slide flex items-center justify-center bg-white">
-            <img src="/src/stock/{{images}}" alt="Sac Keepall noir Louis Vuitton" class="object-contain w-full h-[80vh]">
-          </figure>
+      <!-- IMAGE qui s'ajoute ici -->
+          <slot name="galerie"></slot>
 
-          <figure class="swiper-slide flex items-center justify-center bg-white">
-            <img src="/src/stock/{{images}}" alt="Sac Keepall bleu Louis Vuitton" class="object-contain w-full h-[80vh]">
-          </figure>
-
-          <figure class="swiper-slide flex items-center justify-center bg-white">
-            <img src="/src/stock/{{images}}" alt="Sac Keepall marron Louis Vuitton" class="object-contain w-full h-[80vh]">
-          </figure>
-        </div>
 
         <!-- Pagination -->
         <div class="swiper-pagination !bottom-5"></div>
