@@ -47,6 +47,7 @@ class CategoryRepository extends EntityRepository {
         foreach ($answer as $obj) {
             $category = new Category($obj->id);
             $category->setName($obj->name);
+            $category->setImage($obj->image);
             $res[] = $category;
         }
         return $res;
