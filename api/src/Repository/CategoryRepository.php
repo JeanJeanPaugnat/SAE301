@@ -54,21 +54,61 @@ class CategoryRepository extends EntityRepository {
 
     //ecris une fonction findByCategory
     public function findByCategory($categoryName): array {
-        $stmt = $this->cnx->prepare("select Product.* from Product JOIN Category ON Product.category = Category.id WHERE Category.name = :value");
+        $sql = "
+            SELECT 
+                p.id AS product_id,
+                p.name AS product_name,
+                p.category AS product_category,
+                p.price AS product_price,
+                i.url AS image_url,
+                i.alt_text AS image_alt
+            FROM Product p
+            JOIN Category c ON p.category = c.id
+            LEFT JOIN Images i ON p.id = i.product_id
+            WHERE c.name = :value
+            ORDER BY p.id, i.ordre ASC
+        ";
+
+        $stmt = $this->cnx->prepare($sql);
         $stmt->bindParam(':value', $categoryName);
         $stmt->execute();
-        $answer = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $res = [];
-        foreach ($answer as $obj) {
-            $p = new Product($obj->id);
-            $p->setName($obj->name);
-            $p->setIdcategory($obj->category);
-            $p->setPrice($obj->price);
-            $res[] = $p;
+        $currentId = null;
+        $currentProduct = null;
+
+        foreach ($rows as $row) {
+            // Nouveau produit détecté
+            if ($row['product_id'] !== $currentId) {
+                // Sauvegarde du produit précédent
+                if ($currentProduct !== null) {
+                    $res[] = $currentProduct;
+                }
+
+                // Création d’un nouveau produit
+                $currentProduct = new Product($row['product_id']);
+                $currentProduct->setName($row['product_name']);
+                $currentProduct->setIdcategory($row['product_category']);
+                $currentProduct->setPrice($row['product_price']);
+                $currentProduct->setImages([]); // Initialise une liste d'images vide
+                $currentId = $row['product_id'];
+            }
+
+            // Ajout d'une image si elle existe
+            if (!empty($row['image_url'])) {
+                $currentProduct->addImage($row['image_url']);
+            }
         }
+
+        // Ajouter le dernier produit à la liste
+        if ($currentProduct !== null) {
+            $res[] = $currentProduct;
+        }
+
         return $res;
     }
+
 
     
 
