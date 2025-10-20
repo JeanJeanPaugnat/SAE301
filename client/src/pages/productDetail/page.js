@@ -1,6 +1,7 @@
 import { ProductData } from "../../data/product.js";
 import { htmlToFragment } from "../../lib/utils.js";
 import { DetailView } from "../../ui/detail/index.js";
+import { DetailImgView } from "../../ui/galerie/index.js";
 import template from "./template.html?raw";
 
 
@@ -27,7 +28,7 @@ C.init = async function(params) {
     const productId = params.id;
     
     // Charger le produit depuis l'API
-    M.products = await ProductData.fetchAll();
+    M.products = await ProductData.fetch(productId);
     
     let p = M.getProductById(productId);
     console.log("Product loaded:", p);
@@ -47,13 +48,15 @@ V.init = function(data) {
 V.createPageFragment = function(data) {
     // Créer le fragment depuis le template
     let pageFragment = htmlToFragment(template);
-    
+
     // Générer le composant detail
     let detailDOM = DetailView.dom(data);
+    let detailImgDOM = DetailImgView.dom(data.images);
 
     
     // Remplacer le slot par le composant detail
     pageFragment.querySelector('slot[name="detail"]').replaceWith(detailDOM);
+    pageFragment.querySelector('slot[name="galerie"]').replaceWith(detailImgDOM);
     V.createSlider(pageFragment);
     return pageFragment;
 }
@@ -69,6 +72,13 @@ export function ProductDetailPage(params) {
     console.log("ProductDetailPage", params);
     return C.init(params);
 }
+
+
+
+
+
+
+//Pour le slider d'images
 
 V.createSlider = function(pageFragment){
       const swiper = pageFragment.querySelector(".swiper");
