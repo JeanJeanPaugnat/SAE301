@@ -30,17 +30,19 @@ C.handler_clickOnProduct = function(ev){
     }
 }
 
-C.handler_ClickOnCategory = function(ev){
-    let categoryId = ev.target.dataset.id;
-    if (categoryId !== undefined){
-        let data = M.filterProductsByCategory(categoryId);
-        V.renderProductsbyCategory(data);
-    };
+// C.handler_ClickOnCategory = async function(ev){
+//     console.log(ev.target.dataset.name)
+//     let categoryName = ev.target.dataset.name;
+//     if (categoryName !== undefined){
+//         let data = await CategoryData.fetchAllByCat(categoryName);
+//         V.renderProductsbyCategory(data);
+//     };
 
-}
+// }
 
 C.init = async function(){
     M.products = await ProductData.fetchAll(); 
+    console.log(M.products);
     M.categories = await CategoryData.fetchAll();
     console.log(M.categories);
     return V.init( M.products, M.categories );
@@ -51,7 +53,7 @@ let V = {};
 
 V.init = function(dataProducts, dataCategories){
     let fragment = V.createPageFragment(dataProducts, dataCategories);
-    V.attachEvents(fragment);
+    // V.attachEvents(fragment);
     return fragment;
 }
 
@@ -70,19 +72,19 @@ V.createPageFragment = function( dataProducts, dataCategories ){
    return pageFragment;
 }
 
-V.renderProductsbyCategory = function(dataProducts){
-    console.log(dataProducts);
-    let productsDOM = ProductView.dom(dataProducts);
-    let container = document.querySelector("#products");
-    console.log(container);
-    container.replaceWith(productsDOM);
-}
+// V.renderProductsbyCategory = function(dataProducts){
+//     console.log(dataProducts);
+//     let productsDOM = ProductView.dom(dataProducts);
+//     let container = document.querySelector("#products");
+//     console.log(container);
+//     container.replaceWith(productsDOM);
+// }
 
-V.attachEvents = function(pageFragment) {
-    let categories = pageFragment.querySelector("#categories");
-    categories.addEventListener("click", C.handler_ClickOnCategory);
-    return pageFragment;
-}
+// V.attachEvents = function(pageFragment) {
+//     let categories = pageFragment.querySelector("#categories");
+//     categories.addEventListener("click", C.handler_ClickOnCategory);
+//     return pageFragment;
+// }
 
 
 

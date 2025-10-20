@@ -47,10 +47,71 @@ class CategoryRepository extends EntityRepository {
         foreach ($answer as $obj) {
             $category = new Category($obj->id);
             $category->setName($obj->name);
+            $category->setImage($obj->image);
             $res[] = $category;
         }
         return $res;
     }
+
+    //ecris une fonction findByCategory
+    public function findByCategory($categoryName): array {
+        $sql = "
+            SELECT 
+                p.id AS product_id,
+                p.name AS product_name,
+                p.category AS product_category,
+                p.price AS product_price,
+                i.url AS image_url,
+                i.alt_text AS image_alt
+            FROM Product p
+            JOIN Category c ON p.category = c.id
+            LEFT JOIN Images i ON p.id = i.product_id
+            WHERE c.name = :value
+            ORDER BY p.id, i.ordre ASC
+        ";
+
+        $stmt = $this->cnx->prepare($sql);
+        $stmt->bindParam(':value', $categoryName);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $res = [];
+        $currentId = null;
+        $currentProduct = null;
+
+        foreach ($rows as $row) {
+            // Nouveau produit détecté
+            if ($row['product_id'] !== $currentId) {
+                // Sauvegarde du produit précédent
+                if ($currentProduct !== null) {
+                    $res[] = $currentProduct;
+                }
+
+                // Création d’un nouveau produit
+                $currentProduct = new Product($row['product_id']);
+                $currentProduct->setName($row['product_name']);
+                $currentProduct->setIdcategory($row['product_category']);
+                $currentProduct->setPrice($row['product_price']);
+                $currentProduct->setImages([]); // Initialise une liste d'images vide
+                $currentId = $row['product_id'];
+            }
+
+            // Ajout d'une image si elle existe
+            if (!empty($row['image_url'])) {
+                $currentProduct->addImage($row['image_url']);
+            }
+        }
+
+        // Ajouter le dernier produit à la liste
+        if ($currentProduct !== null) {
+            $res[] = $currentProduct;
+        }
+
+        return $res;
+    }
+
+
+    
 
     public function save($product){
         // Not implemented ! TODO when needed !

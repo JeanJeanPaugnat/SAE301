@@ -14,6 +14,7 @@ require_once ('Entity.php');
 class Category extends Entity {
     private int $id; // id de la catégorie
     private ?string $name = null; // nom de la catégorie (nullable)
+    private ?string $image = null; // URL de l'image unique (nullable)
 
     public function __construct(int $id) {
         $this->id = $id;
@@ -54,6 +55,24 @@ class Category extends Entity {
     }
 
     /**
+     * Get the value of image
+     */
+    public function getImage(): ?string {
+        return $this->image;
+    }
+
+    /**
+     * Set the value of image
+     *
+     * @param string|null $image URL de l'image ou null
+     * @return self
+     */
+    public function setImage(?string $image): self {
+        $this->image = $image;
+        return $this;
+    }
+
+    /**
      * Define how to convert/serialize a Category to a JSON format
      * This method will be automatically invoked by json_encode when applied to a Category.
      */
@@ -61,6 +80,7 @@ class Category extends Entity {
         return [
             "id" => $this->id,
             "name" => $this->name,
+            "image" => $this->image,
         ];
     }
 }

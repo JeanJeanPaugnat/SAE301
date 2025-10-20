@@ -7,6 +7,7 @@ import { ProductDetailPage } from "./pages/productDetail/page.js";
 
 import { RootLayout } from "./layouts/root/layout.js";
 import { The404Page } from "./pages/404/page.js";
+import { CategoriesPage } from "./pages/categories/page.js";
 
 // Exemple d'utilisation avec authentification
 
@@ -18,10 +19,12 @@ router.addRoute("/", HomePage);
 router.addRoute("/about", AboutPage);
 
 router.addRoute("/products", ProductsPage);
+router.addRoute("/categories/:name", CategoriesPage);
 router.addRoute("/products/:id/:slug", ProductDetailPage);
 
 router.addRoute("*", The404Page);
 
 // Démarrer le routeur
 router.start();
+
 

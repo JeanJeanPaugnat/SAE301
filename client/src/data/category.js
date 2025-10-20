@@ -14,6 +14,11 @@ CategoryData.fetchAll = async function(){
     return data;
 }
 
+CategoryData.fetchAllByCat = async function(name){
+    let data = await getRequest('categories/'+name);
+    return data;
+}
+
 
 
 export {CategoryData};
