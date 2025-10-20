@@ -18,10 +18,12 @@ router.addRoute("/", HomePage);
 router.addRoute("/about", AboutPage);
 
 router.addRoute("/products", ProductsPage);
+router.addRoute("/categories/:id", ProductsPage);
 router.addRoute("/products/:id/:slug", ProductDetailPage);
 
 router.addRoute("*", The404Page);
 
 // Démarrer le routeur
 router.start();
+
 

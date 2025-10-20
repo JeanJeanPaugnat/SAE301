@@ -8,3 +8,32 @@ body {
 }
 
 
+.swiper-wrapper {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.swiper-slide {
+  min-width: 100%;
+  user-select: none;
+}
+
+.swiper-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  position: absolute;
+  width: 100%;
+}
+
+.swiper-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #999;
+  cursor: pointer;
+}
+
+.swiper-dot.active {
+  background: #000;
+}

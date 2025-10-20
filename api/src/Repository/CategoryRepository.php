@@ -52,6 +52,26 @@ class CategoryRepository extends EntityRepository {
         return $res;
     }
 
+    //ecris une fonction findByCategory
+    public function findByCategory($categoryName): array {
+        $stmt = $this->cnx->prepare("select Product.* from Product JOIN Category ON Product.category = Category.id WHERE Category.name = :value");
+        $stmt->bindParam(':value', $categoryName);
+        $stmt->execute();
+        $answer = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $res = [];
+        foreach ($answer as $obj) {
+            $p = new Product($obj->id);
+            $p->setName($obj->name);
+            $p->setIdcategory($obj->category);
+            $p->setPrice($obj->price);
+            $res[] = $p;
+        }
+        return $res;
+    }
+
+    
+
     public function save($product){
         // Not implemented ! TODO when needed !
         return false;

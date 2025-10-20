@@ -16,16 +16,25 @@ class CategoryController extends EntityController {
 
    
     protected function processGetRequest(HttpRequest $request) {
+        $ressource = $request->getRessources();
         $id = $request->getId();
-        if ($id) {
-            $res = $this->categories->find($id);
-            return $res ?: false;;
-        } else {
-            $res = $this->categories->findAll();
-            return $res;
+
+        if ($ressource === "categories") {
+            if ($id) {
+                return $this->categories->findByCategory($id);
+            }
+
+            $cat = $request->getParam("categories");
+            if ($cat) {
+                return $this->categories->findByCategory($cat);
+            }
+
+            return $this->categories->findAll();
         }
-        
+
+        return false;
     }
+
 
     protected function processPostRequest(HttpRequest $request) {
             // Pour plus tard

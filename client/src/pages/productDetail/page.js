@@ -50,10 +50,11 @@ V.createPageFragment = function(data) {
     
     // Générer le composant detail
     let detailDOM = DetailView.dom(data);
+
     
     // Remplacer le slot par le composant detail
     pageFragment.querySelector('slot[name="detail"]').replaceWith(detailDOM);
-    
+    V.createSlider(pageFragment);
     return pageFragment;
 }
 
@@ -67,4 +68,64 @@ V.attachEvents = function(pageFragment) {
 export function ProductDetailPage(params) {
     console.log("ProductDetailPage", params);
     return C.init(params);
+}
+
+V.createSlider = function(pageFragment){
+      const swiper = pageFragment.querySelector(".swiper");
+  const wrapper = swiper.querySelector(".swiper-wrapper");
+  const slides = swiper.querySelectorAll(".swiper-slide");
+  const pagination = swiper.querySelector(".swiper-pagination");
+
+  let currentIndex = 0;
+  const totalSlides = slides.length;
+
+  // Créer la pagination
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement("span");
+    dot.classList.add("swiper-dot");
+    if (i === 0) dot.classList.add("active");
+    dot.addEventListener("click", () => {
+      goToSlide(i);
+    });
+    pagination.appendChild(dot);
+  }
+
+  const dots = pagination.querySelectorAll(".swiper-dot");
+
+  function goToSlide(index) {
+    if (index < 0) index = 0;
+    if (index >= totalSlides) index = totalSlides - 1;
+    wrapper.style.transform = `translateX(-${index * 100}%)`;
+    currentIndex = index;
+    updatePagination();
+  }
+
+  function updatePagination() {
+    dots.forEach(dot => dot.classList.remove("active"));
+    dots[currentIndex].classList.add("active");
+  }
+
+  // Swipe tactile
+  let startX = 0;
+  let isDragging = false;
+
+  wrapper.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+  });
+
+  wrapper.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    const moveX = e.touches[0].clientX - startX;
+    wrapper.style.transform = `translateX(${ -currentIndex * 100 + (moveX / wrapper.offsetWidth) * 100 }%)`;
+  });
+
+  wrapper.addEventListener("touchend", (e) => {
+    isDragging = false;
+    const endX = e.changedTouches[0].clientX;
+    const diff = endX - startX;
+    if (diff > 50) goToSlide(currentIndex - 1);
+    else if (diff < -50) goToSlide(currentIndex + 1);
+    else goToSlide(currentIndex);
+  });
 }

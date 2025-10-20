@@ -23,43 +23,92 @@ class ProductRepository extends EntityRepository {
         parent::__construct();
     }
 
-    public function find($id): ?Product{
-        /*
-            La façon de faire une requête SQL ci-dessous est "meilleur" que celle vue
-            au précédent semestre (cnx->query). Notamment l'utilisation de bindParam
-            permet de vérifier que la valeur transmise est "safe" et de se prémunir
-            d'injection SQL.
-        */
-        $requete = $this->cnx->prepare("select * from Product where id=:value"); // prepare la requête SQL
-        $requete->bindParam(':value', $id); // fait le lien entre le "tag" :value et la valeur de $id
-        $requete->execute(); // execute la requête
+    public function find($id): ?Product {
+        // Requête pour récupérer le produit
+        $requete = $this->cnx->prepare("SELECT * FROM Product WHERE id = :value");
+        $requete->bindParam(':value', $id, PDO::PARAM_INT);
+        $requete->execute();
         $answer = $requete->fetch(PDO::FETCH_OBJ);
-        
-        if ($answer==false) return null; // may be false if the sql request failed (wrong $id value for example)
-        
+
+        if ($answer == false) return null;
+
+        // Création de l'objet Product
         $p = new Product($answer->id);
         $p->setName($answer->name);
         $p->setIdcategory($answer->category);
-        // $p->setPrice($answer->price);
+        $p->setPrice($answer->price);
+
+        // 🔽 Nouvelle partie : récupération des images associées
+        $reqImg = $this->cnx->prepare("SELECT url, alt_text FROM Images WHERE product_id = :pid ORDER BY ordre ASC");
+        $reqImg->bindParam(':pid', $id, PDO::PARAM_INT);
+        $reqImg->execute();
+        $images = $reqImg->fetchAll(PDO::FETCH_ASSOC);
+
+        // On ne garde que les URLs (ou tu peux garder tout le tableau si tu veux le alt_text aussi)
+        $imageUrls = array_map(fn($img) => $img['url'], $images);
+
+        // On associe les images au produit
+        $p->setImages($imageUrls);
+
         return $p;
     }
 
+
     public function findAll(): array {
-        $requete = $this->cnx->prepare("select * from Product");
+        // 1️⃣ Une seule requête pour tout récupérer
+        $sql = "
+            SELECT 
+                p.id AS product_id,
+                p.name AS product_name,
+                p.category AS product_category,
+                p.price AS product_price,
+                i.url AS image_url,
+                i.alt_text AS image_alt
+            FROM Product p
+            LEFT JOIN Images i ON p.id = i.product_id
+            ORDER BY p.id, i.ordre ASC
+        ";
+
+        $requete = $this->cnx->prepare($sql);
         $requete->execute();
-        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        $rows = $requete->fetchAll(PDO::FETCH_ASSOC);
 
         $res = [];
-        foreach($answer as $obj){
-            $p = new Product($obj->id);
-            $p->setName($obj->name);
-            $p->setIdcategory($obj->category);
-            $p->setPrice($obj->price);
-            array_push($res, $p);
+        $currentId = null;
+        $currentProduct = null;
+
+        // 2️⃣ On parcourt chaque ligne du résultat
+        foreach ($rows as $row) {
+            // Si c’est un nouveau produit
+            if ($row['product_id'] !== $currentId) {
+                // Si un produit précédent est en cours → on le sauvegarde
+                if ($currentProduct !== null) {
+                    $res[] = $currentProduct;
+                }
+
+                // Création du nouveau produit
+                $currentProduct = new Product($row['product_id']);
+                $currentProduct->setName($row['product_name']);
+                $currentProduct->setIdcategory($row['product_category']);
+                $currentProduct->setPrice($row['product_price']);
+                $currentProduct->setImages([]); // initialise la liste vide
+                $currentId = $row['product_id'];
+            }
+
+            // Si la ligne contient une image, on l’ajoute
+            if (!empty($row['image_url'])) {
+                $currentProduct->addImage($row['image_url']);
+            }
         }
-        
+
+        // N’oublie pas d’ajouter le dernier produit après la boucle
+        if ($currentProduct !== null) {
+            $res[] = $currentProduct;
+        }
+
         return $res;
     }
+
 
     public function save($product){
         $requete = $this->cnx->prepare("insert into Product (name, category) values (:name, :idcategory)");

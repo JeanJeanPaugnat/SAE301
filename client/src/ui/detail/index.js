@@ -12,3 +12,5 @@ let DetailView = {
 };
 
 export { DetailView };
+
+

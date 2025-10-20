@@ -30,10 +30,11 @@ C.handler_clickOnProduct = function(ev){
     }
 }
 
-C.handler_ClickOnCategory = function(ev){
-    let categoryId = ev.target.dataset.id;
-    if (categoryId !== undefined){
-        let data = M.filterProductsByCategory(categoryId);
+C.handler_ClickOnCategory = async function(ev){
+    console.log(ev.target.dataset.name)
+    let categoryName = ev.target.dataset.name;
+    if (categoryName !== undefined){
+        let data = await CategoryData.fetchAllByCat(categoryName);
         V.renderProductsbyCategory(data);
     };
 
@@ -41,6 +42,7 @@ C.handler_ClickOnCategory = function(ev){
 
 C.init = async function(){
     M.products = await ProductData.fetchAll(); 
+    console.log(M.products);
     M.categories = await CategoryData.fetchAll();
     console.log(M.categories);
     return V.init( M.products, M.categories );
