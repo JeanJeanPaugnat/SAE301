@@ -1,0 +1,87 @@
+<!-- Bouton de fermeture -->
+  <button href="/" data-link class="absolute top-6 left-6 text-3xl font-light">
+    ✕
+  </button>
+
+  <main class="w-full max-w-md space-y-10">
+    
+    <!-- Section Création de compte -->
+    <section aria-labelledby="creation-titre">
+      <header class="mb-8 flex justify-between items-start">
+        <h1 id="creation-titre" class="text-xl font-medium">Créer votre compte</h1>
+        <span class="text-gray-500 text-sm">Champs obligatoires*</span>
+      </header>
+
+      <form class="space-y-6" action="#" method="POST">
+        <fieldset class="space-y-5">
+          <legend class="sr-only">Informations personnelles</legend>
+
+          <!-- Prénom -->
+          <div>
+            <label for="prenom" class="block font-medium text-sm mb-1">Prénom*</label>
+            <input 
+              type="text" 
+              id="prenom" 
+              name="prenom"
+              autocomplete="given-name"
+              required
+              class="w-full border border-gray-400 rounded-md p-3 focus:outline-none focus:border-black"
+            >
+          </div>
+
+          <!-- Nom -->
+          <div>
+            <label for="nom" class="block font-medium text-sm mb-1">Nom*</label>
+            <input 
+              type="text" 
+              id="nom" 
+              name="nom"
+              autocomplete="family-name"
+              required
+              class="w-full border border-gray-400 rounded-md p-3 focus:outline-none focus:border-black"
+            >
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block font-medium text-sm mb-1">E-mail*</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              autocomplete="email"
+              required
+              class="w-full border border-gray-400 rounded-md p-3 focus:outline-none focus:border-black"
+            >
+          </div>
+
+          <!-- Mot de passe -->
+          <div>
+            <label for="password" class="block font-medium text-sm mb-1">Mot de passe*</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              autocomplete="new-password"
+              required
+              class="w-full border border-gray-400 rounded-md p-3 focus:outline-none focus:border-black"
+            >
+          </div>
+        </fieldset>
+
+        <!-- Bouton d'envoi -->
+        <button 
+          type="submit" 
+          class="w-full bg-black text-white py-3 rounded-full font-medium hover:bg-gray-800 transition"
+        >
+          Créer mon compte
+        </button>
+      </form>
+
+      <!-- Lien vers la connexion -->
+      <p class="text-sm text-gray-800 mt-4">
+        Vous avez déjà un compte My LV ?
+        <a href="/login" data-link class="underline hover:text-gray-600 transition">Cliquez ici</a>
+      </p>
+    </section>
+  </main>
