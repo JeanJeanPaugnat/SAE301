@@ -93,11 +93,16 @@ class CategoryRepository extends EntityRepository {
                 $currentProduct->setIdcategory($row['product_category']);
                 $currentProduct->setPrice($row['product_price']);
                 $currentProduct->setImages([]); // Initialise une liste d'images vide
+                $currentProduct->setImagePrincipale(null); // initialise image principale
                 $currentId = $row['product_id'];
             }
 
             // Ajout d'une image si elle existe
             if (!empty($row['image_url'])) {
+                // Définir l'image principale sur la première image rencontrée (ordre ASC)
+                if ($currentProduct->getImagePrincipale() === null) {
+                    $currentProduct->setImagePrincipale($row['image_url']);
+                }
                 $currentProduct->addImage($row['image_url']);
             }
         }
