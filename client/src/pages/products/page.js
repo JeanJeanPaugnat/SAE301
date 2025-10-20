@@ -1,13 +1,25 @@
 import { ProductData } from "../../data/product.js";
 import { ProductView } from "../../ui/product/index.js";
+import { CategoryData } from "../../data/category.js";
+import { CategoryView } from "../../ui/category/index.js";
 import { htmlToFragment } from "../../lib/utils.js";
 import template from "./template.html?raw";
 
 
 let M = {
-    products: []
+    products: [],
+    categories: []
 };
 
+M.filterProductsByCategory = function(categoryId){
+    if(categoryId==="all"){
+        return M.products;
+    }else{
+        let data = M.products.filter(p => p.category == categoryId);
+        return data;
+    }
+
+}
 
 let C = {};
 
@@ -18,38 +30,61 @@ C.handler_clickOnProduct = function(ev){
     }
 }
 
+C.handler_ClickOnCategory = function(ev){
+    let categoryId = ev.target.dataset.id;
+    if (categoryId !== undefined){
+        let data = M.filterProductsByCategory(categoryId);
+        V.renderProductsbyCategory(data);
+    };
+
+}
+
 C.init = async function(){
     M.products = await ProductData.fetchAll(); 
-    return V.init( M.products );
+    M.categories = await CategoryData.fetchAll();
+    console.log(M.categories);
+    return V.init( M.products, M.categories );
 }
 
 
 let V = {};
 
-V.init = function(data){
-    let fragment = V.createPageFragment(data);
+V.init = function(dataProducts, dataCategories){
+    let fragment = V.createPageFragment(dataProducts, dataCategories);
     V.attachEvents(fragment);
     return fragment;
 }
 
-V.createPageFragment = function( data ){
+V.createPageFragment = function( dataProducts, dataCategories ){
    // Créer le fragment depuis le template
    let pageFragment = htmlToFragment(template);
    
    // Générer les produits
-   let productsDOM = ProductView.dom(data);
+   let productsDOM = ProductView.dom(dataProducts);
+   let categoriesDOM = CategoryView.dom(dataCategories);
    
    // Remplacer le slot par les produits
    pageFragment.querySelector('slot[name="products"]').replaceWith(productsDOM);
+   pageFragment.querySelector('slot[name="categories"]').replaceWith(categoriesDOM);
    
    return pageFragment;
 }
 
+V.renderProductsbyCategory = function(dataProducts){
+    console.log(dataProducts);
+    let productsDOM = ProductView.dom(dataProducts);
+    let container = document.querySelector("#products");
+    console.log(container);
+    container.replaceWith(productsDOM);
+}
+
 V.attachEvents = function(pageFragment) {
-    let root = pageFragment.firstElementChild;
-    root.addEventListener("click", C.handler_clickOnProduct);
+    let categories = pageFragment.querySelector("#categories");
+    categories.addEventListener("click", C.handler_ClickOnCategory);
     return pageFragment;
 }
+
+
 
 export function ProductsPage(params) {
     console.log("ProductsPage", params);

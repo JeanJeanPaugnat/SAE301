@@ -27,3 +27,40 @@ export function RootLayout() {
     layout.querySelector('slot[name="footer"]').replaceWith(footer);
     return layout;
 }
+
+// A gerer pour faire un menu burger avec en lien le composant header
+
+
+
+
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const burgerButton = document.querySelector("#burgerMenu");
+//   const sideMenu = document.querySelector("#sideMenu");
+//   const menuOverlay = document.querySelector("#menuOverlay");
+//   const closeButton = document.querySelector("#closeMenu");
+
+//   // Fonction pour ouvrir le menu
+//   const openMenu = () => {
+//     if (!sideMenu || !menuOverlay) return;
+//     sideMenu.classList.remove("-translate-x-full");
+//     menuOverlay.classList.remove("hidden");
+//   };
+
+//   // Fonction pour fermer le menu
+//   const closeMenuFn = () => {
+//     if (!sideMenu || !menuOverlay) return;
+//     sideMenu.classList.add("-translate-x-full");
+//     menuOverlay.classList.add("hidden");
+//   };
+
+//   // Attache les événements seulement si les éléments existent
+//   if (burgerButton) burgerButton.addEventListener("click", openMenu);
+//   if (closeButton) closeButton.addEventListener("click", closeMenuFn);
+//   if (menuOverlay) menuOverlay.addEventListener("click", closeMenuFn);
+
+//   // Ferme le menu quand on change de page (optionnel)
+//   document.addEventListener("click", (e) => {
+//     if (e.target.matches("[data-link]")) closeMenuFn();
+//   });
+// });
