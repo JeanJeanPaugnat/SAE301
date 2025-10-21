@@ -15,7 +15,16 @@ UserData.fetchAll = async function(){
 }
 
 UserData.createAccount = async function(userInfo){
+    console.log(userInfo);
     let data = await postRequest('users', userInfo);
+    console.log(data);
+    return data;
+}
+
+UserData.login = async function(credentials){
+    console.log(credentials);
+    let data = await postRequest('users?login', credentials);
+    console.log(data);
     return data;
 }
 

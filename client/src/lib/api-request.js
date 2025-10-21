@@ -64,7 +64,7 @@ let postRequest = async function(uri, data){
         header: {
             Content_Type: 'multipart/form-data' // type de données envoyées (nécessaire si upload fichier)
         },
-        body: data
+        body: JSON.stringify(data)
     }
 
     try{

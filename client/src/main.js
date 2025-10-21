@@ -13,7 +13,7 @@ import { CategoriesPage } from "./pages/categories/page.js";
 
 // Exemple d'utilisation avec authentification
 
-const router = new Router('app');
+const router = new Router('app', { loginPath: '/login' });
 
 router.addLayout("/", RootLayout);
 
@@ -25,6 +25,10 @@ router.addRoute("/login", LoginPage);
 router.addRoute("/create-login", CreateLoginPage);
 router.addRoute("/categories/:name", CategoriesPage);
 router.addRoute("/products/:id/:slug", ProductDetailPage);
+
+
+// Pour la page de profil utilisateur (exige une authentification)
+// router.addRoute("/profile", ProfilePage, { requireAuth: true });
 
 router.addRoute("*", The404Page);
 
