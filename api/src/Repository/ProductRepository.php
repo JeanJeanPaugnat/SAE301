@@ -38,18 +38,18 @@ class ProductRepository extends EntityRepository {
         $p->setIdcategory($answer->category);
         $p->setPrice($answer->price);
 
-        // 🔽 Nouvelle partie : récupération des images associées
+
         $reqImg = $this->cnx->prepare("SELECT url, alt_text FROM Images WHERE product_id = :pid ORDER BY ordre ASC");
         $reqImg->bindParam(':pid', $id, PDO::PARAM_INT);
         $reqImg->execute();
         $images = $reqImg->fetchAll(PDO::FETCH_ASSOC);
 
-        // On ne garde que les URLs (ou tu peux garder tout le tableau si tu veux le alt_text aussi)
+        //pour garfer que les urls des img
         $imageUrls = array_map(fn($img) => $img['url'], $images);
 
-        // On associe les images au produit
+        // mettre les images au produit
         $p->setImages($imageUrls);
-        // 🆕 on définit l'imagePrincipale : première image si présente
+        // on met la première image comme image princi
         $p->setImagePrincipale($imageUrls[0] ?? null);
 
         return $p;
@@ -57,19 +57,7 @@ class ProductRepository extends EntityRepository {
 
 
     public function findAll(): array {
-        // 1️⃣ Une seule requête pour tout récupérer
-        $sql = "
-            SELECT 
-                p.id AS product_id,
-                p.name AS product_name,
-                p.category AS product_category,
-                p.price AS product_price,
-                i.url AS image_url,
-                i.alt_text AS image_alt
-            FROM Product p
-            LEFT JOIN Images i ON p.id = i.product_id
-            ORDER BY p.id, i.ordre ASC
-        ";
+        $sql = "SELECT p.id AS product_id, p.name AS product_name, p.category AS product_category, p.price AS product_price, i.url AS image_url, i.alt_text AS image_alt FROM Product p LEFT JOIN Images i ON p.id = i.product_id ORDER BY p.id, i.ordre ASC ";
 
         $requete = $this->cnx->prepare($sql);
         $requete->execute();
@@ -79,7 +67,7 @@ class ProductRepository extends EntityRepository {
         $currentId = null;
         $currentProduct = null;
 
-        // 2️⃣ On parcourt chaque ligne du résultat
+        // parcours de chaque lignes 
         foreach ($rows as $row) {
             // Si c’est un nouveau produit
             if ($row['product_id'] !== $currentId) {

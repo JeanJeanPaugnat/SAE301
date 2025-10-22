@@ -4,6 +4,9 @@ import { AboutPage } from "./pages/about/page.js";
 import { HomePage } from "./pages/home/page.js";
 import { ProductsPage } from "./pages/products/page.js";
 import { ProductDetailPage } from "./pages/productDetail/page.js";
+import { LoginPage } from "./pages/login/page.js";
+import { CreateLoginPage } from "./pages/createlogin/page.js";
+import { ProfilePage } from "./pages/profile/page.js";
 
 import { RootLayout } from "./layouts/root/layout.js";
 import { The404Page } from "./pages/404/page.js";
@@ -11,7 +14,7 @@ import { CategoriesPage } from "./pages/categories/page.js";
 
 // Exemple d'utilisation avec authentification
 
-const router = new Router('app');
+const router = new Router('app', { loginPath: '/login' });
 
 router.addLayout("/", RootLayout);
 
@@ -19,8 +22,19 @@ router.addRoute("/", HomePage);
 router.addRoute("/about", AboutPage);
 
 router.addRoute("/products", ProductsPage);
+
+router.addRoute("/login", LoginPage, {useLayout : false});
+router.addRoute("/create-login", CreateLoginPage, {useLayout : false});
+
+
 router.addRoute("/categories/:name", CategoriesPage);
 router.addRoute("/products/:id/:slug", ProductDetailPage);
+
+router.addRoute("/profile", ProfilePage, { requireAuth: true });
+
+
+// Pour la page de profil utilisateur (exige une authentification)
+// router.addRoute("/profile", ProfilePage, { requireAuth: true });
 
 router.addRoute("*", The404Page);
 
