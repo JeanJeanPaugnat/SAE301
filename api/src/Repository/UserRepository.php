@@ -22,6 +22,7 @@ class UserRepository extends EntityRepository {
             $p->setName($answer->name);
             $p->setLastName($answer->lastName);
             $p->setEmail($answer->email);
+            $p->setPassword($answer->password);
             // Ne pas exposer le mot de passe inutilement
             return $p;
         } catch (PDOException $e) {
@@ -125,9 +126,27 @@ class UserRepository extends EntityRepository {
 
 
 
-    public function update($object) {
+    public function update($object, $id) {
         // Implémente ce que tu veux ou laisse vide si tu ne l’utilises pas
-    }
+
+        $stmt = $this->cnx->prepare(
+            "UPDATE User SET name = :name, lastName = :lastName, email = :email, password = :password WHERE id = :id"
+        );
+        $stmt->bindValue(":name", $object->getName(), PDO::PARAM_STR);
+        $stmt->bindValue(":lastName", $object->getLastName(), PDO::PARAM_STR);
+        $stmt->bindValue(":email", $object->getEmail(), PDO::PARAM_STR);
+        $stmt->bindValue(":password", $object->getPassword(), PDO::PARAM_STR);
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        $success = $stmt->execute();
+        
+        // Important: retourner l'objet User mis à jour, pas juste true/false
+        if ($success) {
+            return $this->find($id); // Retourner l'utilisateur mis à jour
+        }
+        
+        return false;
+        }
+
 
     public function delete($id) {
         // Implémente ce que tu veux ou laisse vide si tu ne l’utilises pas

@@ -15,6 +15,7 @@ C.init = async function(router){
     if (form) {
         form.addEventListener('submit', async (ev) => {
             ev.preventDefault();
+
             console.log('Formulaire soumis');
             
             const email = form.querySelector("#email").value.trim();

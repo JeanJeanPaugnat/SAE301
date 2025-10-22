@@ -1,7 +1,7 @@
 <div class="max-w-2xl mx-auto mt-10 p-8 bg-white">
   <h2 class="text-3xl font-normal mb-8 text-gray-900 border-b pb-4">Informations personnelles</h2>
-  
-  <form class="space-y-6">
+
+  <form data-id='{{id}}' class="space-y-6 ">
     <!-- Prénom -->
     <div>
       <label for="prenom" class="block text-base font-normal text-gray-900 mb-2">Prénom</label>
@@ -40,12 +40,21 @@
 
     <!-- Mot de passe -->
     <div>
-      <label for="password" class="block text-base font-normal text-gray-900 mb-2">Mot de passe</label>
+      <label for="password" class="block text-base font-normal text-gray-900 mb-2">Ancien mot de passe*</label>
       <input 
         type="password" 
         id="password" 
         name="password" 
-        value="{{password}}" 
+        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-gray-700"
+      >
+    </div>
+
+    <div>
+      <label for="newPassword" class="block text-base font-normal text-gray-900 mb-2">Nouveau mot de passe</label>
+      <input 
+        type="password" 
+        id="newPassword" 
+        name="newPassword" 
         class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-gray-700"
       >
     </div>

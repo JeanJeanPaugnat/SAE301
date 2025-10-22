@@ -28,7 +28,7 @@ router.addRoute("/create-login", CreateLoginPage, {useLayout : false});
 
 
 router.addRoute("/categories/:name", CategoriesPage);
-router.addRoute("/products/:id/:slug", ProductDetailPage);
+router.addRoute("/products/:id/:slug", ProductDetailPage, { requireAuth: true });
 
 router.addRoute("/profile", ProfilePage, { requireAuth: true });
 

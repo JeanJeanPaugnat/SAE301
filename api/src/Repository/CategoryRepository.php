@@ -128,7 +128,7 @@ class CategoryRepository extends EntityRepository {
         return false;
     }
 
-    public function update($product){
+    public function update($product, $id){
         // Not implemented ! TODO when needed !
         return false;
     }
