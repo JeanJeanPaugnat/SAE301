@@ -10,11 +10,32 @@ class UserController extends EntityController {
 
     public function __construct(){
         $this->users = new UserRepository();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
    
     protected function processGetRequest(HttpRequest $request) {
-        $id = $request->getId(); // récupération via l'URL : /users/3
+        $id = $request->getId();
+        
+        // vérifier si connecté via ?check
+        if (isset($_GET['check'])) {
+            if (isset($_SESSION['user_id'])) {
+                $user = $this->users->find($_SESSION['user_id']);
+                if ($user) {
+                    return [
+                        "logged" => true,
+                        "id" => $user->getId(),
+                        "name" => $user->getName(),
+                        "lastName" => $user->getLastName(),
+                        "email" => $user->getEmail(),
+                    ];
+                }
+            }
+            return ["logged" => false];
+        }
+        
         if ($id) {
             return $this->users->find($id);
         } else {
@@ -26,7 +47,13 @@ class UserController extends EntityController {
         $json = $request->getJson();
         $data = is_string($json) ? json_decode($json) : $json;
 
-        // détecter explicitement login via la query string ?login
+        // logout
+        if (isset($_GET['logout'])) {
+            session_destroy();
+            return ["message" => "Déconnexion réussie"];
+        }
+
+        // login
         $isLogin = isset($_GET['login']);
 
         if ($isLogin) {
@@ -41,6 +68,9 @@ class UserController extends EntityController {
                 return ["error" => "Email ou mot de passe incorrect"];
             }
 
+            // stocker l'utilisateur en session
+            $_SESSION['user_id'] = $user->getId();
+
             return [
                 "id" => $user->getId(),
                 "name" => $user->getName(),
@@ -48,7 +78,7 @@ class UserController extends EntityController {
                 "email" => $user->getEmail(),
             ];
         } else {
-            // création de compte — accepter lastName ou lastname envoyé par le front
+            // création de compte
             $lastNameValue = $data->lastname ?? $data->lastName ?? null;
 
             if (!isset($data->name) || !$lastNameValue || !isset($data->email) || !isset($data->password)) {
@@ -65,6 +95,9 @@ class UserController extends EntityController {
             $savedUser = $this->users->save($user);
 
             if ($savedUser) {
+                // connecter automatiquement après inscription
+                $_SESSION['user_id'] = $savedUser->getId();
+
                 return [
                     "id" => $savedUser->getId(),
                     "name" => $savedUser->getName(),

@@ -1,8 +1,6 @@
 import {getRequest, postRequest} from '../lib/api-request.js';
 
-
 let UserData = {};
-
 
 UserData.fetch = async function(id){
     let data = await getRequest('users/'+id);
@@ -14,22 +12,29 @@ UserData.fetchAll = async function(){
     return data;
 }
 
-UserData.createAccount = async function(userInfo){
+UserData.signUp = async function(userInfo){
     console.log(userInfo);
     let data = await postRequest('users', userInfo);
     console.log(data);
     return data;
 }
 
-UserData.login = async function(credentials){
+UserData.signIn = async function(credentials){
     console.log(credentials);
     let data = await postRequest('users?login', credentials);
     console.log(data);
     return data;
 }
 
+UserData.signOut = async function(){
+    let data = await postRequest('users?logout');
+    console.log(data);
+    return data;
+}
 
-
-
+UserData.checkAuth = async function(){
+    let data = await getRequest('users?check');
+    return data;
+}
 
 export { UserData };

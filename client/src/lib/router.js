@@ -127,8 +127,8 @@ class Router {
         this.currentRoute = path;
         const params = this.getParams(route, path);
         
-        // Générer le contenu de la page
-        const content = route.handler(params);
+        // Passer l'instance du router au handler
+        const content = route.handler(params, this);
         
         if (content instanceof Promise) {
           // Le handler retourne une promesse
@@ -146,7 +146,7 @@ class Router {
     // Route 404 si aucune correspondance
     const notFound = this.routes.find(r => r.path === '*');
     if (notFound) {
-      const content = notFound.handler({});
+      const content = notFound.handler({}, this);
       this.root.innerHTML = content;
     }
   }

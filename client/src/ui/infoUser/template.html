@@ -1,0 +1,73 @@
+<div class="max-w-2xl mx-auto mt-10 p-8 bg-white">
+  <h2 class="text-3xl font-normal mb-8 text-gray-900 border-b pb-4">Informations personnelles</h2>
+  
+  <form class="space-y-6">
+    <!-- Prénom -->
+    <div>
+      <label for="prenom" class="block text-base font-normal text-gray-900 mb-2">Prénom</label>
+      <input 
+        type="text" 
+        id="prenom" 
+        name="prenom" 
+        value="{{name}}" 
+        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-gray-700"
+      >
+    </div>
+
+    <!-- Nom -->
+    <div>
+      <label for="nom" class="block text-base font-normal text-gray-900 mb-2">Nom</label>
+      <input 
+        type="text" 
+        id="nom" 
+        name="nom" 
+        value="{{lastName}}" 
+        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-gray-700"
+      >
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="email" class="block text-base font-normal text-gray-900 mb-2">E-mail</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        value="{{email}}" 
+        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-gray-700"
+      >
+    </div>
+
+    <!-- Mot de passe -->
+    <div>
+      <label for="password" class="block text-base font-normal text-gray-900 mb-2">Mot de passe</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        value="{{password}}" 
+        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-gray-700"
+      >
+    </div>
+
+    <!-- Bouton Enregistrer -->
+    <div class="pt-6">
+      <button 
+        type="submit" 
+        class="w-full bg-black text-white py-4 px-6 rounded-full hover:bg-gray-800 transition font-medium text-base"
+      >
+        Enregistrer les modifications
+      </button>
+    </div>
+  </form>
+
+  <!-- Bouton Me Déconnecter -->
+  <div class="mt-6">
+    <button id="logout-btn"
+      type="button" 
+      class="w-auto bg-white text-black py-3 px-8 rounded-full border-2 border-gray-300 hover:bg-gray-50 transition font-medium text-base"
+    >
+      Me Déconnecter
+    </button>
+  </div>
+</div>
