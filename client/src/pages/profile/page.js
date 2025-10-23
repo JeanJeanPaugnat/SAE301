@@ -1,10 +1,15 @@
 import { UserData } from "../../data/user.js";
 import { UserInfoView } from "../../ui/infoUser/index.js";
+
+import { OrderData } from "../../data/order.js";
+import { OrderView } from "../../ui/orderUser/index.js";
+
 import { htmlToFragment } from "../../lib/utils.js";
 import template from "./template.html?raw";
 
 let M = {
     user: null,
+    orders: null
 };
 
 let C = {};
@@ -28,9 +33,8 @@ C.init = async function(params, router){
             return;
         }
     }
-
-    console.log(M.user);
-    return V.init(M.user, router);
+    M.orders = await OrderData.fetchByUser(M.user.id);
+    return V.init(M.user, M.orders, router);
 }
 
 C.attachEvents = function(fragment){
@@ -93,14 +97,18 @@ C.attachEvents = function(fragment){
 
 let V = {};
 
-V.init = function(dataUser, router){
-    let fragment = V.createPageFragment(dataUser, router);
+V.init = function(dataUser, dataOrders, router){
+    let fragment = V.createPageFragment(dataUser, dataOrders, router);
     return fragment;
 }
 
-V.createPageFragment = function(dataUser, router){
+V.createPageFragment = function(dataUser, dataOrders, router){
     let pageFragment = htmlToFragment(template);
+    console.log(dataOrders);
     let userInfoDOM = UserInfoView.dom(dataUser);
+    let allOrdersDom = OrderView.domList(dataOrders);
+    console.log(allOrdersDom);
+    pageFragment.querySelector('slot[name="orders"]').replaceWith(allOrdersDom);
     pageFragment.querySelector('slot[name="infos"]').replaceWith(userInfoDOM);
     
     // Ajouter le bouton de déconnexion

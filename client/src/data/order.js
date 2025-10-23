@@ -2,8 +2,8 @@ import {getRequest, patchRequest, postRequest, } from '../lib/api-request.js';
 
 let OrderData = {};
 
-OrderData.fetch = async function(id){
-    let data = await getRequest('orders/'+id);
+OrderData.fetchByUser = async function(id){
+    let data = await getRequest('orders?user='+id);
     return data;
 }
 
