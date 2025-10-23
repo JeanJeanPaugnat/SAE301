@@ -7,6 +7,7 @@ import { ProductDetailPage } from "./pages/productDetail/page.js";
 import { LoginPage } from "./pages/login/page.js";
 import { CreateLoginPage } from "./pages/createlogin/page.js";
 import { ProfilePage } from "./pages/profile/page.js";
+import { CartPage } from "./pages/cart/page.js";
 
 import { RootLayout } from "./layouts/root/layout.js";
 import { The404Page } from "./pages/404/page.js";
@@ -22,13 +23,14 @@ router.addRoute("/", HomePage);
 router.addRoute("/about", AboutPage);
 
 router.addRoute("/products", ProductsPage);
+router.addRoute("/cart", CartPage);
 
 router.addRoute("/login", LoginPage, {useLayout : false});
 router.addRoute("/create-login", CreateLoginPage, {useLayout : false});
 
 
 router.addRoute("/categories/:name", CategoriesPage);
-router.addRoute("/products/:id/:slug", ProductDetailPage, { requireAuth: true });
+router.addRoute("/products/:id/:slug", ProductDetailPage);
 
 router.addRoute("/profile", ProfilePage, { requireAuth: true });
 
