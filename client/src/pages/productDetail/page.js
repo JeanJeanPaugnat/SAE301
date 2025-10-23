@@ -1,4 +1,5 @@
 import { ProductData } from "../../data/product.js";
+import { CartData } from "../../data/cart.js";
 import { htmlToFragment } from "../../lib/utils.js";
 import { DetailView } from "../../ui/detail/index.js";
 import { DetailImgView } from "../../ui/galerie/index.js";
@@ -6,7 +7,7 @@ import template from "./template.html?raw";
 
 
 let M = {
-    products: []
+    products: {}
 };
 
 M.getProductById = function(id){
@@ -19,7 +20,8 @@ let C = {};
 C.handler_clickOnProduct = function(ev){
     if (ev.target.dataset.buy!==undefined){
         let id = ev.target.dataset.buy;
-        alert(`Produit ajouté au panier ! (Quand il y en aura un)`);
+        alert(`Produit ajouté au panier !`);
+        CartData.addToCart(M.products[0]);
     }
 }
 
@@ -65,6 +67,8 @@ V.attachEvents = function(pageFragment) {
     // Attacher un event listener au bouton
     const addToCartBtn = pageFragment.querySelector('[data-buy]');
     addToCartBtn.addEventListener('click', C.handler_clickOnProduct);
+
+    
     return pageFragment;
 }
 

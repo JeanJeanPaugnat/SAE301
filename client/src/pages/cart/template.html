@@ -1,0 +1,31 @@
+<main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- En-tête du panier -->
+      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <h1 class="text-lg font-medium">Mon Panier (<span id="nbItemsCart">0</span>)</h1>
+        <a
+          href="/products" data-link
+          class="text-sm underline text-gray-600 hover:text-gray-900 mt-2 sm:mt-0"
+          >Continuer mes achats</a
+        >
+      </header>
+    <div class="grid lg:grid-cols-3 gap-8">
+
+        <slot id="listproducts" name="listproducts"> </slot>
+
+        <aside class="bg-white border rounded-lg shadow-sm p-6 self-start">
+            <div class="flex justify-between mb-6">
+                <p class="font-medium">Total</p>
+                <p id="totalPrice" class="font-medium">1 400,00€</p>
+            </div>
+            <button
+                class="w-full bg-black text-white py-3 rounded-full hover:bg-gray-800 transition"
+            >
+                Procéder au paiement
+            </button>
+        </aside>
+    </div>
+
+
+    
+
+</main>
