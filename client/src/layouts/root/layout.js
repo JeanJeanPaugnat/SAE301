@@ -2,6 +2,7 @@ import template from "./template.html?raw";
 import { htmlToFragment } from "../../lib/utils.js";
 import { HeaderView } from "../../ui/header/index.js";
 import { FooterView } from "../../ui/footer/index.js";
+import { CartData } from "../../data/cart.js";
 
 
 
@@ -26,12 +27,20 @@ export function RootLayout() {
     layout.querySelector('slot[name="header"]').replaceWith(header);
     layout.querySelector('slot[name="footer"]').replaceWith(footer);
     listenMenuBurger(layout);
+    countNumberItemsCart(layout);
     return layout;
 }
 
 // A gerer pour faire un menu burger avec en lien le composant header
 
-
+let countNumberItemsCart = function(layout) {
+    const cartCounter = layout.querySelector('#cartCounterHeader');
+    console.log(cartCounter);
+    const cartItems = CartData.getCart();
+    const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+    cartCounter.textContent = itemCount;
+    return cartCounter;
+}
 
 let listenMenuBurger = function(layout) {
         

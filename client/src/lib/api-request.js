@@ -23,16 +23,18 @@ let API_URL = "https://mmi.unilim.fr/~paugnat7/api/";
  *  Exemple : let data = await getRequest(http://.../api/products);
  */
 let getRequest = async function(uri){
-
-    let options = {
-        method: "GET"
-    };
-
-    try{
-        var response = await fetch(API_URL+uri, options); // exécution (asynchrone) de la requête et attente de la réponse
-    }
-    catch(e){
-        console.error("Echec de la requête : "+e); // affichage de l'erreur dans la console
+    try {
+        let response = await fetch(API_URL + uri, {
+            method: "GET",
+            credentials: 'include' // ← VÉRIFIEZ QUE C'EST ICI
+        });
+        
+        if (response.ok) {
+            return await response.json();
+        }
+        return false;
+    } catch(e) {
+        console.error(e);
         return false;
     }
     if (response.status != 200){
