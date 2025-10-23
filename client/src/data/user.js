@@ -1,4 +1,4 @@
-import {getRequest, postRequest} from '../lib/api-request.js';
+import {getRequest, patchRequest, postRequest, } from '../lib/api-request.js';
 
 let UserData = {};
 
@@ -34,6 +34,11 @@ UserData.signOut = async function(){
 
 UserData.checkAuth = async function(){
     let data = await getRequest('users?check');
+    return data;
+}
+
+UserData.update = async function(id, userInfo){
+    let data = await patchRequest('users?update='+id, userInfo);
     return data;
 }
 

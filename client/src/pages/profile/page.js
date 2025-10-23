@@ -33,6 +33,64 @@ C.init = async function(params, router){
     return V.init(M.user, router);
 }
 
+C.attachEvents = function(fragment){
+    // Les événements sont attachés dans la vue
+    const form = fragment.querySelector('form');
+    console.log(form);
+    if (form) {
+        form.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+
+            const userId = form.dataset.id;
+            const prenom = form.querySelector("#prenom").value.trim();
+            const nom = form.querySelector("#nom").value.trim();
+            const email = form.querySelector("#email").value.trim();
+            const oldPassword = form.querySelector("#password").value.trim();
+            const newPassword = form.querySelector("#newPassword").value.trim();
+
+            // Validation: l'ancien mot de passe est obligatoire
+            if (!oldPassword) {
+                alert("L'ancien mot de passe est requis pour enregistrer les modifications");
+                return;
+            }
+
+            let data = {
+                name: prenom,
+                lastName: nom,
+                email: email,
+                oldPassword: oldPassword
+            };
+
+            // Ajouter le nouveau mot de passe seulement s'il est renseigné
+            if (newPassword) {
+                data.newPassword = newPassword;
+            }
+
+            try {
+                const response = await UserData.update(userId, data);
+                console.log('Profil mis à jour', response);
+                
+                // Mettre à jour le localStorage
+                const connectedUser = JSON.parse(localStorage.getItem('connectedUser'));
+                if (connectedUser) {
+                    connectedUser.name = prenom;
+                    connectedUser.lastName = nom;
+                    connectedUser.email = email;
+                    localStorage.setItem('connectedUser', JSON.stringify(connectedUser));
+                }
+                
+                alert("Profil mis à jour avec succès");
+                // Réinitialiser les champs de mot de passe
+                form.querySelector("#password").value = "";
+                form.querySelector("#newPassword").value = "";
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour:', error);
+                alert("Erreur: " + (error.message || "Impossible de mettre à jour le profil"));
+            }
+        });
+    }
+}
+
 let V = {};
 
 V.init = function(dataUser, router){
@@ -61,6 +119,7 @@ V.createPageFragment = function(dataUser, router){
         });
     }
     
+    C.attachEvents(pageFragment);
     return pageFragment;
 }
 
