@@ -34,6 +34,7 @@ C.init = async function(params) {
     
     let p = M.getProductById(productId);
     console.log("Product loaded:", p);
+
     
     return V.init(p);
 }
@@ -44,6 +45,7 @@ let V = {};
 V.init = function(data) {
     let fragment = V.createPageFragment(data);
     V.attachEvents(fragment);
+    V.renderStockStatus(fragment);
     return fragment;
 }
 
@@ -61,6 +63,21 @@ V.createPageFragment = function(data) {
     pageFragment.querySelector('slot[name="galerie"]').replaceWith(detailImgDOM);
     V.createSlider(pageFragment);
     return pageFragment;
+}
+
+V.renderStockStatus = function(fragment){
+    const productElements = fragment.querySelectorAll('.stock-status');
+    console.log(productElements);
+    productElements.forEach(productElement => {
+        let stockStatus = productElement.textContent;
+        if (stockStatus === "In stock") {
+            productElement.classList.add('in-stock');
+        } else if (stockStatus === "Running low") {
+            productElement.classList.add('running-low');
+        } else if (stockStatus === "Out of stock") {
+            productElement.classList.add('out-of-stock');
+        }
+    });
 }
 
 V.attachEvents = function(pageFragment) {

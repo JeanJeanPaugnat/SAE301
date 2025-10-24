@@ -7,12 +7,9 @@ class Product extends Entity implements JsonSerializable {
     private ?string $name = null;
     private ?int $idcategory = null;
     private ?float $price = null;
-
-    // 🆕 Propriété pour l'image principale
+    private ?int $quantity = null;
     private ?string $imagePrincipale = null;
-
-    // 🆕 Liste des images liées à ce produit
-    private array $images = []; // contiendra par exemple une liste d'objets Image ou de chaînes (URL)
+    private array $images = [];
 
     public function __construct(int $id){
         $this->id = $id;
@@ -28,10 +25,21 @@ class Product extends Entity implements JsonSerializable {
             "name" => $this->name,
             "category" => $this->idcategory,
             "price" => number_format($this->price, 2, ',', ' '),
+            "quantity" => $this->quantity,
+            "stockStatus" => $this->getStockStatus(),
             "imagePrincipale" => $this->imagePrincipale,
-            // 🆕 On renvoie la liste des images dans le JSON
             "images" => $this->images,
         ];
+    }
+
+    public function getStockStatus(): string {
+        if ($this->quantity === null || $this->quantity <= 0) {
+            return "Out of stock";
+        } elseif ($this->quantity <= 15) {
+            return "Running low";
+        } else {
+            return "In stock";
+        }
     }
 
     public function getName(): ?string {
@@ -52,12 +60,19 @@ class Product extends Entity implements JsonSerializable {
         return $this;
     }
 
-    // 🆕 GETTER pour l'image principale
+    public function getQuantity(): ?int {
+        return $this->quantity;
+    }
+
+    public function setQuantity(?int $quantity): self {
+        $this->quantity = $quantity;
+        return $this;
+    }
+
     public function getImagePrincipale(): ?string {
         return $this->imagePrincipale;
     }
 
-    // 🆕 SETTER pour l'image principale (autorise null)
     public function setImagePrincipale(?string $imagePrincipale): self {
         $this->imagePrincipale = $imagePrincipale;
         return $this;
