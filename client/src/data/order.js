@@ -4,7 +4,8 @@ let OrderData = {};
 
 OrderData.fetchByUser = async function(id){
     let data = await getRequest('orders?user='+id);
-    return data;
+    console.log(data);
+    return data || [];
 }
 
 OrderData.create = async function(orderData){

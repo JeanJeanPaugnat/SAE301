@@ -17,6 +17,7 @@ let C = {};
 C.init = async function(params, router){
     // Récupérer les données de l'utilisateur connecté depuis localStorage
     const connectedUser = localStorage.getItem('connectedUser');
+    console.log(connectedUser);
     
     if (connectedUser) {
         M.user = JSON.parse(connectedUser);

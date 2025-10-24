@@ -13,10 +13,16 @@ class OrderController extends EntityController {
 
     protected function processGetRequest(HttpRequest $request) {
         $id = $request->getId("id");
+        $userId = $request->getParam("user");
+        
         if ($id){
             // URI is .../orders/{id}
             $order = $this->orders->find($id);
             return $order == null ? false : $order;
+        }
+        else if ($userId) {
+            // URI is .../orders?user={userId}
+            return $this->orders->findByUserId($userId);
         }
         else{
             // URI is .../orders
