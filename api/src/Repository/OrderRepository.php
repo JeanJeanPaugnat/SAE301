@@ -17,7 +17,26 @@ class OrderRepository extends EntityRepository {
             // Commencer une transaction
             $this->cnx->beginTransaction();
             
-            // 1. Insérer la commande dans la table Orders
+            // 🆕 ÉTAPE 0 : Vérifier le stock disponible avant de créer la commande
+            $stmtCheckStock = $this->cnx->prepare(
+                "SELECT id, name, quantity FROM Product WHERE id = :product_id"
+            );
+            
+            foreach ($order->getItems() as $item) {
+                $stmtCheckStock->bindValue(':product_id', $item['productId'], PDO::PARAM_INT);
+                $stmtCheckStock->execute();
+                $product = $stmtCheckStock->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$product) {
+                    throw new Exception("Produit ID {$item['productId']} introuvable");
+                }
+                
+                if ($product['quantity'] < $item['quantity']) {
+                    throw new Exception("Stock insuffisant pour {$product['name']}. Disponible: {$product['quantity']}, Demandé: {$item['quantity']}");
+                }
+            }
+            
+
             $stmt = $this->cnx->prepare(
                 "INSERT INTO Orders (user_id, created_at) VALUES (:user_id, :created_at)"
             );
@@ -31,13 +50,19 @@ class OrderRepository extends EntityRepository {
             $orderId = $this->cnx->lastInsertId();
             $order->setId($orderId);
             
-            // 2. Insérer les items de la commande dans OrderItems
+
             $stmtItem = $this->cnx->prepare(
                 "INSERT INTO OrderItems (order_id, product_id, product_name, quantity, unit_price, total_price) 
                  VALUES (:order_id, :product_id, :product_name, :quantity, :unit_price, :total_price)"
             );
             
+
+            $stmtUpdateStock = $this->cnx->prepare(
+                "UPDATE Product SET quantity = quantity - :quantity WHERE id = :product_id"
+            );
+            
             foreach ($order->getItems() as $item) {
+                // Insérer l'item de commande
                 $stmtItem->bindValue(':order_id', $orderId, PDO::PARAM_INT);
                 $stmtItem->bindValue(':product_id', $item['productId'], PDO::PARAM_INT);
                 $stmtItem->bindValue(':product_name', $item['productName'], PDO::PARAM_STR);
@@ -45,13 +70,20 @@ class OrderRepository extends EntityRepository {
                 $stmtItem->bindValue(':unit_price', $item['unitPrice'], PDO::PARAM_STR);
                 $stmtItem->bindValue(':total_price', $item['totalPrice'], PDO::PARAM_STR);
                 $stmtItem->execute();
+                $stmtUpdateStock->bindValue(':quantity', $item['quantity'], PDO::PARAM_INT);
+                $stmtUpdateStock->bindValue(':product_id', $item['productId'], PDO::PARAM_INT);
+                $stmtUpdateStock->execute();
+                
+                if ($stmtUpdateStock->rowCount() === 0) {
+                    throw new Exception("Échec de la mise à jour du stock pour le produit ID {$item['productId']}");
+                }
             }
             
-            // Valider la transaction
+
             $this->cnx->commit();
             return true;
             
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             // Annuler la transaction en cas d'erreur
             $this->cnx->rollBack();
             error_log("Error creating order: " . $e->getMessage());
