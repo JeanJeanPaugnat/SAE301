@@ -53,7 +53,7 @@ let V = {};
 
 V.init = function(dataProducts, dataCategories){
     let fragment = V.createPageFragment(dataProducts, dataCategories);
-    // V.attachEvents(fragment);
+    V.renderStockStatus(fragment);
     return fragment;
 }
 
@@ -68,25 +68,23 @@ V.createPageFragment = function( dataProducts, dataCategories ){
    // Remplacer le slot par les produits
    pageFragment.querySelector('slot[name="products"]').replaceWith(productsDOM);
    pageFragment.querySelector('slot[name="categories"]').replaceWith(categoriesDOM);
-   
    return pageFragment;
 }
 
-// V.renderProductsbyCategory = function(dataProducts){
-//     console.log(dataProducts);
-//     let productsDOM = ProductView.dom(dataProducts);
-//     let container = document.querySelector("#products");
-//     console.log(container);
-//     container.replaceWith(productsDOM);
-// }
-
-// V.attachEvents = function(pageFragment) {
-//     let categories = pageFragment.querySelector("#categories");
-//     categories.addEventListener("click", C.handler_ClickOnCategory);
-//     return pageFragment;
-// }
-
-
+V.renderStockStatus = function(fragment){
+    const productElements = fragment.querySelectorAll('.stock-status');
+    console.log(productElements);
+    productElements.forEach(productElement => {
+        let stockStatus = productElement.textContent;
+        if (stockStatus === "In stock") {
+            productElement.classList.add('in-stock');
+        } else if (stockStatus === "Running low") {
+            productElement.classList.add('running-low');
+        } else if (stockStatus === "Out of stock") {
+            productElement.classList.add('out-of-stock');
+        }
+    });
+}
 
 export function ProductsPage(params) {
     console.log("ProductsPage", params);

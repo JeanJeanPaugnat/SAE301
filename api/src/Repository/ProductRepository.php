@@ -37,6 +37,7 @@ class ProductRepository extends EntityRepository {
         $p->setName($answer->name);
         $p->setIdcategory($answer->category);
         $p->setPrice($answer->price);
+        $p->setQuantity($answer->quantity ?? 0);
 
 
         $reqImg = $this->cnx->prepare("SELECT url, alt_text FROM Images WHERE product_id = :pid ORDER BY ordre ASC");
@@ -57,7 +58,12 @@ class ProductRepository extends EntityRepository {
 
 
     public function findAll(): array {
-        $sql = "SELECT p.id AS product_id, p.name AS product_name, p.category AS product_category, p.price AS product_price, i.url AS image_url, i.alt_text AS image_alt FROM Product p LEFT JOIN Images i ON p.id = i.product_id ORDER BY p.id, i.ordre ASC ";
+        $sql = "SELECT p.id AS product_id, p.name AS product_name, p.category AS product_category, 
+                p.price AS product_price, p.quantity AS product_quantity,
+                i.url AS image_url, i.alt_text AS image_alt 
+                FROM Product p 
+                LEFT JOIN Images i ON p.id = i.product_id 
+                ORDER BY p.id, i.ordre ASC";
 
         $requete = $this->cnx->prepare($sql);
         $requete->execute();
@@ -81,6 +87,7 @@ class ProductRepository extends EntityRepository {
                 $currentProduct->setName($row['product_name']);
                 $currentProduct->setIdcategory($row['product_category']);
                 $currentProduct->setPrice($row['product_price']);
+                $currentProduct->setQuantity($row['product_quantity'] ?? 0);
                 $currentProduct->setImages([]); // initialise la liste vide
                 $currentProduct->setImagePrincipale(null); // initialise l'image principale à null
                 $currentId = $row['product_id'];
@@ -89,7 +96,6 @@ class ProductRepository extends EntityRepository {
             // Si la ligne contient une image, on l’ajoute
             if (!empty($row['image_url'])) {
                 $currentProduct->addImage($row['image_url']);
-                // 🆕 si aucune imagePrincipale définie, on met la première rencontrée
                 if ($currentProduct->getImagePrincipale() === null) {
                     $currentProduct->setImagePrincipale($row['image_url']);
                 }

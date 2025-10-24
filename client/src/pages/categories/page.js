@@ -55,6 +55,7 @@ let V = {};
 V.init = function(dataProducts, dataCategories){
     let fragment = V.createPageFragment(dataProducts, dataCategories);
     V.attachEvents(fragment);
+    V.renderStockStatus(fragment);
     return fragment;
 }
 
@@ -87,6 +88,20 @@ V.attachEvents = function(pageFragment) {
     return pageFragment;
 }
 
+V.renderStockStatus = function(fragment){
+    const productElements = fragment.querySelectorAll('.stock-status');
+    console.log(productElements);
+    productElements.forEach(productElement => {
+        let stockStatus = productElement.textContent;
+        if (stockStatus === "In stock") {
+            productElement.classList.add('in-stock');
+        } else if (stockStatus === "Running low") {
+            productElement.classList.add('running-low');
+        } else if (stockStatus === "Out of stock") {
+            productElement.classList.add('out-of-stock');
+        }
+    });
+}
 
 
 export function CategoriesPage(params) {

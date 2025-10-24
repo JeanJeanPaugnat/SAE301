@@ -53,7 +53,6 @@ class CategoryRepository extends EntityRepository {
         return $res;
     }
 
-    //ecris une fonction findByCategory
     public function findByCategory($categoryName): array {
         $sql = "
             SELECT 
@@ -61,6 +60,7 @@ class CategoryRepository extends EntityRepository {
                 p.name AS product_name,
                 p.category AS product_category,
                 p.price AS product_price,
+                p.quantity AS product_quantity,
                 i.url AS image_url,
                 i.alt_text AS image_alt
             FROM Product p
@@ -80,26 +80,22 @@ class CategoryRepository extends EntityRepository {
         $currentProduct = null;
 
         foreach ($rows as $row) {
-            // Nouveau produit détecté
             if ($row['product_id'] !== $currentId) {
-                // Sauvegarde du produit précédent
                 if ($currentProduct !== null) {
                     $res[] = $currentProduct;
                 }
 
-                // Création d’un nouveau produit
                 $currentProduct = new Product($row['product_id']);
                 $currentProduct->setName($row['product_name']);
                 $currentProduct->setIdcategory($row['product_category']);
                 $currentProduct->setPrice($row['product_price']);
-                $currentProduct->setImages([]); // Initialise une liste d'images vide
-                $currentProduct->setImagePrincipale(null); // initialise image principale
+                $currentProduct->setQuantity($row['product_quantity'] ?? 0);
+                $currentProduct->setImages([]);
+                $currentProduct->setImagePrincipale(null);
                 $currentId = $row['product_id'];
             }
 
-            // Ajout d'une image si elle existe
             if (!empty($row['image_url'])) {
-                // Définir l'image principale sur la première image rencontrée (ordre ASC)
                 if ($currentProduct->getImagePrincipale() === null) {
                     $currentProduct->setImagePrincipale($row['image_url']);
                 }
@@ -107,7 +103,6 @@ class CategoryRepository extends EntityRepository {
             }
         }
 
-        // Ajouter le dernier produit à la liste
         if ($currentProduct !== null) {
             $res[] = $currentProduct;
         }
@@ -115,24 +110,15 @@ class CategoryRepository extends EntityRepository {
         return $res;
     }
 
-
-    
-
     public function save($product){
-        // Not implemented ! TODO when needed !
         return false;
     }
 
     public function delete($id){
-        // Not implemented ! TODO when needed !
         return false;
     }
 
     public function update($product, $id){
-        // Not implemented ! TODO when needed !
         return false;
     }
-
-   
-    
 }
