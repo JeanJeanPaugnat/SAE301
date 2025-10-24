@@ -4,6 +4,7 @@ import { htmlToFragment } from "../../lib/utils.js";
 import { ProductCartView } from "../../ui/productCart/index.js";
 import { UserData } from "../../data/user.js";
 import { OrderData } from "../../data/order.js";
+import { ProductData } from "../../data/product.js";
 
 let M = {
     user: null,
@@ -14,7 +15,6 @@ let C = {};
 
 C.init = async function(params, router){
     M.router = router;
-    
 
         // Si pas de données en localStorage, vérifier avec l'API
         const authCheck = await UserData.checkAuth();
@@ -53,15 +53,27 @@ C.handlerDecreaseQuantity = function(event){
     }
 }
 
-C.handlerIncreaseQuantity = function(event){
+C.handlerIncreaseQuantity = async function(event){
     const productId = Number(event.currentTarget.dataset.id);
+    console.log("Increase quantity for product ID:", productId);
     const element = event.currentTarget.closest('#product-cart-item');
     const currentQty = Number(element.querySelector('#quantity').textContent);
-    
-    CartData.updateQuantity(productId, currentQty + 1);
-    element.querySelector('#quantity').textContent = currentQty + 1;
-    V.updateProductPrice(element, currentQty + 1);
-    V.updateTotalPrice();
+    console.log("Current quantity:", currentQty);
+
+        let response = await ProductData.fetch(productId);
+        
+        const availableStock = response[0].quantity;
+
+        if (currentQty >= availableStock) {
+            alert(`Stock maximum atteint (${availableStock} article${availableStock > 1 ? 's' : ''} disponible${availableStock > 1 ? 's' : ''})`);
+            return;
+        }
+        
+        CartData.updateQuantity(productId, currentQty + 1);
+        element.querySelector('#quantity').textContent = currentQty + 1;
+        V.updateProductPrice(element, currentQty + 1);
+        V.updateTotalPrice();
+
 }
 
 C.handlerProcessPayment = async function(){
@@ -113,13 +125,13 @@ C.handlerProcessPayment = async function(){
 
 let V = {};
 
-// Fonction utilitaire pour convertir le prix string en number
+
 V.parsePrice = function(priceString){
     // Convertir "2 400,00" en 2400.00
     return parseFloat(priceString.replace(/\s/g, '').replace(',', '.'));
 }
 
-// Fonction utilitaire pour formater un nombre en prix
+
 V.formatPrice = function(number){
     // Convertir 2400.00 en "2 400,00"
     return number.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
