@@ -18,8 +18,26 @@ M.getProductById = function(id){
 let C = {};
 
 C.handler_clickOnProduct = function(ev){
-    if (ev.target.dataset.buy!==undefined){
+    let quantity = M.products[0].quantity;
+    
+    // Vérifier si le produit est en rupture de stock
+    if (quantity <= 0){
+        alert(`Produit en rupture de stock !`);
+        return;
+    }
+    
+    if (ev.target.dataset.buy !== undefined){
         let id = ev.target.dataset.buy;
+        const cart = CartData.getCart();   
+        const existingItem = cart.find(item => item.id === M.products[0].id);
+        
+        if (existingItem) {
+            if (existingItem.quantity >= quantity) {
+                alert(`Stock maximum atteint ! Vous avez déjà ${existingItem.quantity} article(s) dans votre panier. Stock disponible : ${quantity}`);
+                return;
+            }
+        }
+        
         alert(`Produit ajouté au panier !`);
         CartData.addToCart(M.products[0]);
     }
