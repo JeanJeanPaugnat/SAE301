@@ -2,11 +2,29 @@ import template from "./template.html?raw";
 import { CartData } from "../../data/cart.js";
 import { htmlToFragment } from "../../lib/utils.js";
 import { ProductCartView } from "../../ui/productCart/index.js";
+import { UserData } from "../../data/user.js";
+import { OrderData } from "../../data/order.js";
 
+let M = {
+    user: null,
+    router: null
+};
 
 let C = {};
 
-C.init = function(){
+C.init = async function(params, router){
+    M.router = router;
+    
+
+        // Si pas de données en localStorage, vérifier avec l'API
+        const authCheck = await UserData.checkAuth();
+        console.log("Auth check:", authCheck);  
+        console.log(authCheck.logged);
+        if (authCheck.logged) {
+            M.user = authCheck;
+            localStorage.setItem('connectedUser', JSON.stringify(authCheck));
+        }
+
     let cartItems = CartData.getCart();
     return V.init(cartItems);
 }
@@ -16,8 +34,8 @@ C.handlerRemoveItem = function(event){
     CartData.removeFromCart(productId);
     
     // Recharger la page du panier
-    const newFragment = C.init();
-    const appContainer = document.querySelector('#app');
+    const newFragment = C.init({}, M.router);
+    const appContainer = document.querySelector('#replaceCart');
     appContainer.innerHTML = '';
     appContainer.appendChild(newFragment);
 }
@@ -46,6 +64,53 @@ C.handlerIncreaseQuantity = function(event){
     V.updateTotalPrice();
 }
 
+C.handlerProcessPayment = async function(){
+    // Vérifier si l'utilisateur est connecté
+    console.log("User before payment:", M.user);
+    if (!M.user) {
+        alert("Vous devez être connecté pour effectuer un paiement");
+        M.router.navigate('/login');
+        return;
+    }
+    
+    // Récupérer les données du panier
+    const cartItems = CartData.getCart();
+    
+    if (cartItems.length === 0) {
+        alert("Votre panier est vide");
+        return;
+    }
+    
+    // Préparer les données de commande
+    const orderData = {
+        userId: M.user.id,
+        items: cartItems.map(item => ({
+            productId: item.id,
+            productName: item.name,
+            quantity: item.quantity,
+            unitPrice: V.parsePrice(item.price), // Prix unitaire
+            totalPrice: V.parsePrice(item.price) * item.quantity // Prix total de la ligne
+        })),
+        totalAmount: cartItems.reduce((sum, item) => {
+            return sum + (V.parsePrice(item.price) * item.quantity);
+        }, 0)
+    };
+    
+    console.log("Order data:", orderData);
+    
+    // TODO: Envoyer la commande à l'API
+
+    await OrderData.create(orderData);
+    
+    alert("Paiement effectué avec succès ! Merci pour votre achat.");
+    
+    // Vider le panier après paiement
+    CartData.clearCart();
+    
+    // Rediriger vers la page de profil ou de confirmation
+    M.router.navigate('/cart');
+}
+
 let V = {};
 
 // Fonction utilitaire pour convertir le prix string en number
@@ -67,6 +132,8 @@ V.attachEvents = function(fragment){
         element.querySelector('#decreaseQuantity').addEventListener('click', C.handlerDecreaseQuantity);
         element.querySelector('#increaseQuantity').addEventListener('click', C.handlerIncreaseQuantity);
     });
+    let processPaymentBtn = fragment.querySelector('#processPaymentBtn');
+    processPaymentBtn.addEventListener('click', C.handlerProcessPayment);
 }
 
 V.nbItems = function(fragment){
@@ -105,41 +172,35 @@ V.updateTotalPrice = function(fragment){
     }, 0);
     if (fragment) {
         let totalElement = fragment.querySelector('#totalPrice');
-                console.log("Total price updated:", total);
         if(totalElement){
             totalElement.textContent = V.formatPrice(total) + '€';
         }
     }else{
         let totalElement = document.querySelector('#totalPrice');
-        console.log("Total price updated:", total);
         if(totalElement){
             totalElement.textContent = V.formatPrice(total) + '€';
         }
     }
-
 }
 
 V.init = function(cartItems){
     let fragment = V.createPageFragment(cartItems);
     V.nbItems(fragment);
-    V.updateAllProductsPrices(fragment); // Met à jour tous les prix des produits
-    V.updateTotalPrice(fragment); // Met à jour le total
+    V.updateAllProductsPrices(fragment);
+    V.updateTotalPrice(fragment);
     V.attachEvents(fragment);
     return fragment;
 }
 
 V.createPageFragment = function(cartItems){
     let pageFragment = htmlToFragment(template);
-
     let productCartDOM = ProductCartView.dom(cartItems);
-
     pageFragment.querySelector('slot[name="listproducts"]').replaceWith(productCartDOM);
     return pageFragment;
 }
 
-export function CartPage(){
-    const cartItems = CartData.getCart();
-    console.log("Cart items:", cartItems);
-    return C.init();
+export function CartPage(params, router){
+    console.log("Cart items:", CartData.getCart());
+    return C.init(params, router);
 }
 

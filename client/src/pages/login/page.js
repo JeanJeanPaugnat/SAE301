@@ -9,7 +9,14 @@ C.init = async function(router){
     let pageFragment = htmlToFragment(template);
     let loginDOM = htmlToFragment(templatelogin);
     pageFragment.querySelector('slot[name="login"]').replaceWith(loginDOM);
-    
+    const authCheck = await UserData.checkAuth();
+        if (authCheck.logged) {
+                if (router) {
+                    router.setAuth(true);
+                    router.navigate('/profile');
+                }
+            }
+
     // Attacher l'événement au formulaire
     const form = pageFragment.querySelector('form');
     if (form) {

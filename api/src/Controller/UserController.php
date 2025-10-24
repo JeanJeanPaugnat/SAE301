@@ -10,7 +10,7 @@ class UserController extends EntityController {
 
     public function __construct(){
         $this->users = new UserRepository();
-            session_start();
+
 
     }
 
@@ -20,6 +20,7 @@ class UserController extends EntityController {
         
         //check
         if (isset($_GET['check'])) {
+            
             if (isset($_SESSION['user_id'])) {
                 $user = $this->users->find($_SESSION['user_id']);
                 if ($user) {
@@ -70,11 +71,12 @@ class UserController extends EntityController {
             //stocke utili en session
             $_SESSION['user_id'] = $user->getId();
 
+            
             return [
                 "id" => $user->getId(),
                 "name" => $user->getName(),
                 "lastName" => $user->getLastName(),
-                "email" => $user->getEmail(),
+                "email" => $user->getEmail()
             ];
         } else {
             //je cré uncompte
