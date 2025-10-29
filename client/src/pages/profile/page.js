@@ -34,7 +34,20 @@ C.init = async function(params, router){
             return;
         }
     }
-    M.orders = await OrderData.fetchByUser(M.user.id);
+    // Récupérer toutes les commandes puis ne garder que les 3 plus récentes
+    const allOrders = await OrderData.fetchByUser(M.user.id) || [];
+    // Tenter de détecter un champ date pour trier (si présent)
+    const dateKeys = ['createdAt', 'created_at', 'date', 'updatedAt'];
+    const key = allOrders.length ? dateKeys.find(k => k in allOrders[0]) : null;
+    let sorted = allOrders;
+    if (key) {
+        sorted = allOrders.slice().sort((a, b) => new Date(b[key]) - new Date(a[key])); // décroissant
+    } else {
+        // si pas de champ date, on prend les 3 derniers éléments du tableau (suppose ordre chronologique)
+        sorted = allOrders.slice();
+    }
+    // Garder au plus 3 éléments (les plus récents)
+    M.orders = sorted.slice(0, 3);
     return V.init(M.user, M.orders, router);
 }
 

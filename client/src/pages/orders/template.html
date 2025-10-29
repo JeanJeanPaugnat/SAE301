@@ -1,0 +1,42 @@
+    <header class="mb-6">
+      <h1 class="text-2xl sm:text-3xl font-semibold">Toutes les commandes</h1>
+      <p class="text-sm text-gray-500 mt-1">Historique de vos commandes passées. Utilisez les filtres pour retrouver une commande rapidement.</p>
+    </header>
+
+    <section aria-labelledby="filters" class="mb-6">
+      <div id="filters" class="sr-only">Filtres des commandes</div>
+      <form class="flex flex-col sm:flex-row sm:items-center gap-3">
+        <label class="sr-only" for="search-orders">Rechercher</label>
+        <input id="search-orders" name="q" type="search" placeholder="Rechercher par numéro, produit ou date" class="flex-1 px-3 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <select name="status" class="px-3 py-2 border rounded-md bg-white">
+          <option value="">Toutes les statuts</option>
+          <option value="delivered">Livrée</option>
+          <option value="processing">En cours</option>
+          <option value="cancelled">Annulée</option>
+        </select>
+        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Filtrer</button>
+      </form>
+    </section>
+
+    <section aria-labelledby="orders-list" class="bg-white rounded-lg shadow-sm p-4">
+      <h2 id="orders-list" class="sr-only">Liste des commandes</h2>
+
+      <!-- Slot pour injecter la liste des commandes -->
+      <slot name="orders"></slot>
+
+      <!-- Exemple structure sémantique si le slot est vide (fallback) -->
+      <div class="" id="orders-fallback">
+        <ul class="divide-y divide-gray-100">
+          <li class="py-4">
+            <article class="flex items-center justify-between">
+              <div>
+                <p class="font-medium">Commande #12345</p>
+                <p class="text-sm text-gray-500">Date: 2025-10-01 — Total: 120€</p>
+              </div>
+              <div class="text-sm text-gray-600">Livrée</div>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>

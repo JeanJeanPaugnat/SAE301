@@ -12,6 +12,7 @@ import { CartPage } from "./pages/cart/page.js";
 import { RootLayout } from "./layouts/root/layout.js";
 import { The404Page } from "./pages/404/page.js";
 import { CategoriesPage } from "./pages/categories/page.js";
+import { OrdersPage } from "./pages/orders/page.js";
 
 // Exemple d'utilisation avec authentification
 
@@ -33,6 +34,7 @@ router.addRoute("/categories/:name", CategoriesPage);
 router.addRoute("/products/:id/:slug", ProductDetailPage);
 
 router.addRoute("/profile", ProfilePage, { requireAuth: true });
+router.addRoute("/profile/orders", OrdersPage, { requireAuth: true });
 
 
 // Pour la page de profil utilisateur (exige une authentification)
